@@ -16,9 +16,11 @@
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
     "chokidar-cli": "^2.1.0",
+    "graphql": "^15.3.0",
     "npm-run-all": "^4.1.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.8.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "tailwind": "^4.0.0",
@@ -33,7 +35,8 @@
     "prebuild": "run-s build:tailwind",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -49,5 +52,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "1.17.8",
+    "@graphql-codegen/typescript": "1.17.8",
+    "@graphql-codegen/typescript-operations": "1.17.8",
+    "@graphql-codegen/typescript-react-apollo": "1.17.8"
   }
 }
