@@ -3,7 +3,7 @@ module.exports = {
     'src/**/**/*.js',
     'src/**/**/*.jsx',
     'src/**/**/*.ts',
-    'src/**/**/*.tsx',
+    'src/**/*.tsx',
     'public/**/*.html',
   ],
   theme: {
