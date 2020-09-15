@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { NavbarWrapper } from './Navbar.styles';
 
+import { AuthContext } from 'context/authContext';
+
 const Navbar = () => {
-  return (
-    <NavbarWrapper>
-      <div className='font-semibold text-gray-300'>
-        <NavLink exact to='/'>
-          SOCIAL
-        </NavLink>
-      </div>
-      <div className='font-semibold text-gray-300'>
+  const { user, logout } = useContext(AuthContext);
+  const notLoggedIn = () => {
+    return (
+      <>
         <NavLink
           to='/login'
           exact
@@ -25,6 +23,31 @@ const Navbar = () => {
         >
           SIGN UP
         </NavLink>
+      </>
+    );
+  };
+  return (
+    <NavbarWrapper>
+      <div className='font-semibold text-gray-300'>
+        <NavLink exact to='/'>
+          {user ? user.username : 'SOCIAL'}
+        </NavLink>
+      </div>
+      <div className='font-semibold text-gray-300'>
+        {user ? (
+          <>
+            <NavLink
+              to='/login'
+              exact
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  text-sm border border-blue-700 rounded'
+              onClick={logout}
+            >
+              SIGN OUT
+            </NavLink>
+          </>
+        ) : (
+          notLoggedIn()
+        )}
       </div>
     </NavbarWrapper>
   );

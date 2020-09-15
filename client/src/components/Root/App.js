@@ -1,29 +1,33 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { MainWrapper } from './App.styles';
+import AuthRoute from 'utils/AuthRoute';
+import { AuthProvider } from 'context/authContext';
+
+import { HomeWrapper } from 'pages/Home/Home.styles';
 
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Register from 'pages/Register';
+import Navbar from 'layout/Navbar';
 
 const App = () => {
   return (
-    <MainWrapper>
+    <AuthProvider>
       <Router>
-        <Switch>
-          <Route exact path='/'>
-            <Home />
-          </Route>
-          <Route path='/login'>
-            <Login />
-          </Route>
-          <Route path='/register'>
-            <Register />
-          </Route>
-        </Switch>
+        <MainWrapper>
+          <Navbar />
+          <HomeWrapper>
+            <Switch>
+              <Route exact path='/' component={Home} />
+              <AuthRoute exact path='/login' component={Login} />
+              <AuthRoute exact path='/register' component={Register} />
+            </Switch>
+          </HomeWrapper>
+        </MainWrapper>
       </Router>
-    </MainWrapper>
+    </AuthProvider>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
@@ -11,12 +11,14 @@ import {
   Button,
   FormWrapper,
 } from 'assets/global/FormInput.styles';
+import { AuthContext } from 'context/authContext';
 import { REGISTER_USER } from 'graphql/mutations/auth';
 import { schemaRegister } from 'utils/authValidation';
 import ErrorToast from 'layout/ErrorToast/ErrorToast';
 
 const Register = () => {
   const history = useHistory();
+  const context = useContext(AuthContext);
   const [regError, setRegError] = useState({});
   const { register, handleSubmit, errors } = useForm({
     mode: 'onBlur',
@@ -24,7 +26,8 @@ const Register = () => {
   });
 
   const [addUser, { loading }] = useMutation(REGISTER_USER, {
-    update(_, result) {
+    update(_, { data: { login: userData } }) {
+      context.login(userData);
       history.push('/');
     },
     onError(error) {
@@ -97,7 +100,9 @@ const Register = () => {
           </p>
         </div>
         <div className='flex items-center justify-between'>
-          <Button type='submit'>SIGN UP</Button>
+          <Button disabled={loading} type='submit'>
+            {loading ? 'LOADING...' : 'SIGN UP'}
+          </Button>
           <NavLink
             exact
             className='inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800'
