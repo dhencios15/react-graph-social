@@ -1,5 +1,5 @@
 import styled from 'styled-components';
 
 export const HomeWrapper = styled.div.attrs({
-  className: 'mt-8',
+  className: 'my-8',
 })``;
