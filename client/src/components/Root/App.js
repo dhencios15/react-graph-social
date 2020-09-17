@@ -11,6 +11,7 @@ import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Register from 'pages/Register';
 import Navbar from 'layout/Navbar';
+import SinglePost from 'components/Posts/SinglePost';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <HomeWrapper>
             <Switch>
               <Route exact path='/' component={Home} />
+              <AuthRoute exact path='/posts/:postId' component={SinglePost} />
               <AuthRoute exact path='/login' component={Login} />
               <AuthRoute exact path='/register' component={Register} />
             </Switch>
