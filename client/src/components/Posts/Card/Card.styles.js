@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import tw from 'twin.macro';
 
 export const CardWrapper = styled.div.attrs({
   className: 'max-w-lg w-64 rounded overflow-hidden shadow-lg bg-gray-400',
@@ -19,4 +20,6 @@ export const CardFooter = styled.div.attrs({
 export const CardButton = styled.div.attrs({
   className:
     'inline-block bg-gray-200 rounded-full px-3 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2 cursor-pointer',
-})``;
+})`
+  ${({ user }) => user && tw`bg-blue-300`}
+`;

@@ -20,7 +20,6 @@ const Home = () => {
       const data = proxy.readQuery({
         query: FETCH_POST_QUERY,
       });
-      console.log(result);
       data.getPosts = [result.data.createPost, ...data.getPosts];
       proxy.writeQuery({ query: FETCH_POST_QUERY, data });
     },
