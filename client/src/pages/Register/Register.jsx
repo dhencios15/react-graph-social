@@ -1,121 +1,95 @@
-import React, { useState, useContext } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import React from 'react';
+import BaseInput from 'components/shared/BaseInput';
+import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
-import { useMutation } from '@apollo/react-hooks';
+import * as yup from 'yup';
 
-import {
-  Form,
-  Input,
-  Label,
-  Button,
-  FormWrapper,
-} from 'assets/global/FormInput.styles';
-import { AuthContext } from 'context/authContext';
-import { REGISTER_USER } from 'graphql/mutations/auth';
-import { schemaRegister } from 'utils/authValidation';
-import ErrorToast from 'layout/ErrorToast/ErrorToast';
-
+const schema = yup.object().shape({
+  username: yup.string().required(),
+  email: yup.string().email().required(),
+  password: yup.string().required(),
+  confirmPassword: yup.string().required(),
+});
 const Register = () => {
-  const history = useHistory();
-  const context = useContext(AuthContext);
-  const [regError, setRegError] = useState({});
   const { register, handleSubmit, errors } = useForm({
     mode: 'onBlur',
-    resolver: yupResolver(schemaRegister),
+    resolver: yupResolver(schema),
   });
-
-  const [addUser, { loading }] = useMutation(REGISTER_USER, {
-    update(_, { data: { login: userData } }) {
-      context.login(userData);
-      history.push('/');
-    },
-    onError(error) {
-      console.log(error.graphQLErrors[0].extensions.exception.errors);
-      setRegError(error.graphQLErrors[0].extensions.exception.errors);
-    },
-  });
-
   const onSubmit = (data, e) => {
-    addUser({ variables: data });
     e.target.reset();
+    console.log(data);
   };
 
   return (
-    <FormWrapper>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        {Object.keys(regError).length > 0 && <ErrorToast errors={regError} />}
-        <div className='mb-4'>
-          <Label>Username</Label>
-          <Input
-            id='username'
-            type='text'
+    <div className='container px-5 py-10 mx-auto flex flex-col'>
+      <div className='lg:w-4/6 mx-auto justify-center items-center'>
+        <form
+          autoComplete='false'
+          onSubmit={handleSubmit(onSubmit)}
+          className='container mx-auto md:w-1/2 flex flex-col w-full md:py-8 mt-8 md:mt-0 rounded-lg p-10 shadow-sm'
+        >
+          <h2 className='text-gray-300 text-lg mb-1 font-medium title-font'>
+            SIGN UP
+          </h2>
+          <p className='leading-relaxed mb-5 text-gray-400'>
+            Post-ironic portland shabby chic echo park, banjo fashion axe
+          </p>
+          <BaseInput
+            hasError={errors.username?.message ? 'red-600' : 'gray-400'}
             placeholder='Username'
-            ref={register}
+            type='text'
+            register={register}
             name='username'
-            hasError={errors.username ? true : false}
           />
-          <p className='text-red-500 text-xs italic'>
+          <p className='text-sm text-red-600 -mt-1 mb-2'>
             {errors.username?.message}
           </p>
-        </div>
-        <div className='mb-4'>
-          <Label>Email</Label>
-          <Input
-            id='email'
+          <BaseInput
+            hasError={errors.email?.message ? 'red-600' : 'gray-400'}
+            placeholder='Email'
             type='email'
-            placeholder='Username'
-            ref={register}
+            register={register}
             name='email'
-            hasError={errors.email ? true : false}
           />
-          <p className='text-red-500 text-xs italic'>{errors.email?.message}</p>
-        </div>
-        <div className='mb-6'>
-          <Label>Password</Label>
-          <Input
-            id='password'
+          <p className='text-sm text-red-600 -mt-1 mb-2'>
+            {errors.email?.message}
+          </p>
+          <BaseInput
+            hasError={errors.password?.message ? 'red-600' : 'gray-400'}
+            placeholder='Password'
             type='password'
-            placeholder='******************'
-            ref={register}
             name='password'
-            hasError={errors.password ? true : false}
+            register={register}
           />
-          <p className='text-red-500 text-xs italic'>
+          <p className='text-sm text-red-600 -mt-1 mb-2'>
             {errors.password?.message}
           </p>
-        </div>
-        <div className='mb-6'>
-          <Label>Confirm Password</Label>
-          <Input
-            id='confirmPassword'
+          <BaseInput
+            hasError={errors.confirmPassword?.message ? 'red-600' : 'gray-400'}
+            placeholder='Password'
             type='password'
-            placeholder='******************'
-            ref={register}
             name='confirmPassword'
-            hasError={errors.confirmPassword ? true : false}
+            register={register}
           />
-          <p className='text-red-500 text-xs italic'>
-            {errors.confirmPassowrd?.message}
+          <p className='text-sm text-red-600 -mt-1 mb-2'>
+            {errors.confirmPassword?.message}
           </p>
-        </div>
-        <div className='flex items-center justify-between'>
-          <Button disabled={loading} type='submit'>
-            {loading ? 'LOADING...' : 'SIGN UP'}
-          </Button>
-          <NavLink
-            exact
-            className='inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800'
-            to='/login'
+          <button
+            type='submit'
+            className='text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg'
           >
-            SIGN IN
-          </NavLink>
-        </div>
-      </Form>
-      <p className='text-center text-gray-500 text-xs'>
-        &copy;2020 Acme Corp. All rights reserved.
-      </p>
-    </FormWrapper>
+            SIGN UP
+          </button>
+          <p className='text-xs text-gray-400 mt-3'>
+            Don't have account?
+            <NavLink className='ml-2 font-semibold text-gray-300' to='/login'>
+              SIGN IN
+            </NavLink>
+          </p>
+        </form>
+      </div>
+    </div>
   );
 };
 

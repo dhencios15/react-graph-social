@@ -1,6 +1,5 @@
-import { render } from 'react-dom';
-import './assets/css/styles.css';
+import ReactDOM from 'react-dom';
+import './assets/css/tailwind.output.css';
+import ApolloProvider from 'ApolloProvider';
 
-import ApolloProvider from './ApolloProvider';
-
-render(ApolloProvider, document.getElementById('root'));
+ReactDOM.render(ApolloProvider, document.getElementById('root'));
