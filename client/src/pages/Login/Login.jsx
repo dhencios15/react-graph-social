@@ -1,22 +1,39 @@
-import React from 'react';
-import BaseInput from 'components/shared/BaseInput';
-import { NavLink } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { NavLink, useHistory } from 'react-router-dom';
+import { useMutation } from '@apollo/react-hooks';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers';
-import * as yup from 'yup';
 
-const schema = yup.object().shape({
-  username: yup.string().required(),
-  password: yup.string().required(),
-});
+import { schemaLogin } from 'utils/authValidation';
+import { yupResolver } from '@hookform/resolvers';
+import { AuthContext } from 'context/authContext';
+import { LOGIN_USER } from 'graphql/mutations/auth';
+
+import BaseInput from 'components/shared/BaseInput';
+import ErrorToast from 'layouts/ErrorToast/ErrorToast';
+
 const Login = () => {
+  const history = useHistory();
+  const [regError, setRegError] = useState({});
+  const context = useContext(AuthContext);
   const { register, handleSubmit, errors } = useForm({
     mode: 'onBlur',
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schemaLogin),
   });
+
+  const [addUser, { loading }] = useMutation(LOGIN_USER, {
+    update(_, { data: { login: userData } }) {
+      context.login(userData);
+      history.push('/');
+    },
+    onError(error) {
+      console.log(error.graphQLErrors[0].extensions.exception.errors);
+      setRegError(error.graphQLErrors[0].extensions.exception.errors);
+    },
+  });
+
   const onSubmit = (data, e) => {
+    addUser({ variables: data });
     e.target.reset();
-    console.log(data);
   };
 
   return (
@@ -25,8 +42,9 @@ const Login = () => {
         <form
           autoComplete='false'
           onSubmit={handleSubmit(onSubmit)}
-          className='container mx-auto md:w-1/2 flex flex-col w-full md:py-8 mt-8 md:mt-0 rounded-lg p-10 shadow-sm'
+          className='container mx-auto md:w-1/2 flex flex-col w-full md:py-8 mt-8 md:mt-0 rounded-lg p-10 shadow-md'
         >
+          {Object.keys(regError).length > 0 && <ErrorToast errors={regError} />}
           <h2 className='text-gray-300 text-lg mb-1 font-medium title-font'>
             SIGN IN
           </h2>
@@ -55,10 +73,11 @@ const Login = () => {
             {errors.password?.message}
           </p>
           <button
+            disabled={loading}
             type='submit'
             className='text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg'
           >
-            SIGN IN
+            {loading ? 'LOADING...' : 'SIGN IN'}
           </button>
           <p className='text-xs text-gray-400 mt-3'>
             Don't have account?
