@@ -37,7 +37,6 @@ const Post = ({ match }) => {
 
   if (!data) return <div>Loading ...</div>;
   const { getPost } = data;
-  console.log(getPost);
 
   return (
     <div className='container px-5 py-10 mx-auto flex flex-col'>
